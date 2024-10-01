@@ -3,7 +3,8 @@ import ptBR from 'date-fns/locale/pt-BR'
 import { Comment } from './Comment'
 import style from './Post.module.css'
 import { Avatar } from './Avatar'
-import { useState } from 'react';
+import { ChangeEvent, FormEvent, InvalidEvent, useState } from 'react';
+import { pt } from 'date-fns/locale';
 
 interface Author {
     name: string;
@@ -11,10 +12,15 @@ interface Author {
     avatarUrl: string;
 }
 
+interface Content {
+    type: 'paragraph' | 'link';
+    content: string;
+}
+
 interface PostProps{
     author: Author;
     publishedAt: Date;
-    content: string
+    content: Content
 }
 
 export function Post({ author, publishedAt, content} :PostProps) {
@@ -26,16 +32,17 @@ export function Post({ author, publishedAt, content} :PostProps) {
 
 
     const publishedDateFormatted = format(publishedAt, "d 'de' LLLL 'às' HH:mm'h'", {
-        locale: ptBR,
+        
+        locale: pt
     })
 
     const publishedDateRelativeToNow = formatDistanceToNow(publishedAt, {
-        locale: ptBR, 
+        locale: pt, 
         addSuffix: true,
 
     })
 
-    function handleCreateNewComment() {
+    function handleCreateNewComment(event: FormEvent) {
         event.preventDefault()
 
 
@@ -44,18 +51,18 @@ export function Post({ author, publishedAt, content} :PostProps) {
         setNewCommentText("");
     }
 
-    function handleNewCommentChange() {
+    function handleNewCommentChange(event: ChangeEvent<HTMLTextAreaElement>) {
         event.target.setCustomValidity('');
         setNewCommentText(event.target.value);
         
         
     }
-    function handleNewCommentInvalid(){
+    function handleNewCommentInvalid(event: InvalidEvent<HTMLTextAreaElement>){
         event.target.setCustomValidity('Esse campo é obrigatório!');
         
     }
 
-    function deleteComment(commentTOdelete){
+    function deleteComment(commentTOdelete: string){
         const commentsWithoutDeletedOne = comments.filter(comment => {
             return comment !== commentTOdelete
         })
@@ -69,7 +76,7 @@ export function Post({ author, publishedAt, content} :PostProps) {
         <article className={style.post}>
             <header>
                 <div className={style.author}>
-                    <Avatar hasBorder src={author.avatarUrl}/>
+                    <Avatar src={author.avatarUrl}/>
                  
                     <div className={style.authorInfo}>
                     <strong>{author.name}</strong>
@@ -84,7 +91,7 @@ export function Post({ author, publishedAt, content} :PostProps) {
                 {content.map(line => {
                     if (line.type === 'paragraph') {
 
-                        return <p key={line.content}>{line.content}</p>;
+                        return (<p key={line.content}>{line.content}</p>)
                     } else if (line.type === 'link') {
                         return <p key={line.content}><a href="#">{line.content}</a></p>
                     }})

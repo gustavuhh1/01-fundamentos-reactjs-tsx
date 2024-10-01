@@ -1,10 +1,14 @@
-/* eslint-disable react/prop-types */
 import { ThumbsUp, Trash } from 'phosphor-react'
 import styles from './Comment.module.css'
 import { Avatar } from './Avatar'
 import { useState } from 'react';
 
-export function Comment({ content , OnDeleteComment}){
+interface CommentProps {
+    content: string;
+    OnDeleteComment: (comment:string) => void;
+}
+
+export function Comment({ content , OnDeleteComment} : CommentProps){
 
     const [likeCount, setLikeCount] = useState(0);
 
