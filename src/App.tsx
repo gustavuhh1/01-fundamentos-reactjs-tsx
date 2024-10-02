@@ -1,11 +1,13 @@
 // JSX = Javascript + XML (HTML)
-import { Post } from "./components/Post.js";
+import { Post, PostType } from "./components/Post.js";
 import { Header } from "./components/Header.js";
 import { Sidebar } from "./components/Sidebar.js";
 import styles from './App.module.css';
 import './global.css';
 
-const posts = [
+
+
+const posts: PostType[] = [
   {
     id: 1,
     author: {
@@ -51,9 +53,7 @@ export function App() {
             return (
             <Post
             key={post.id}
-            author={post.author}
-            content={post.content}
-            publishedAt={post.publishedAt}
+            post={post}
             />
           )
 
